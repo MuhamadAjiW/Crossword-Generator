@@ -122,55 +122,53 @@ public class CrosswordGenerator {
                                 int x = xpoint;
 
                                 Boolean canAdd = true;
-                                toBeIntersections = new HashSet<>();
-                                for(int j = 0; j < len; j++){
-                                    if(j == i) {
-                                        toBeIntersections.add("(" + (y + j) + "," + x + ")");
-                                        continue;
-                                    };
-                                    if(crossword.matrix.get("("+ (y + j) +","+ (x) +")") != null){
-                                        if(crossword.matrix.get("("+ (y + j) +","+ (x) +")") != word.charAt(j)) {
-                                            canAdd = false;
-                                            break;
-                                        };
-                                        toBeIntersections.add("(" + (y + j) + "," + x + ")");
-                                    }
-                                    else{
-                                        if(crossword.matrix.get("("+ (y + j) +","+ (x + 1) +")") != null){
-                                            canAdd = false;
-                                            break;
-                                        }
-                                        if(crossword.matrix.get("("+ (y + j) +","+ (x - 1) +")") != null){
-                                            canAdd = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if(crossword.matrix.get("("+ (y + len) +","+ (x) +")") != null) canAdd = false;
-                                if(crossword.matrix.get("("+ (y - 1) +","+ (x) +")") != null) canAdd = false;
                                 Question addedQuestion = new Question(y, x, len);
                                 if (compaction && crossword.expanding(addedQuestion, word)) canAdd = false;
-                                
-                                if(canAdd) {
-                                    addQuestionV(addedQuestion, word, toBeIntersections);
-                                    vertical = false;
-    
-                                    crossword.maxHeight = Math.max(crossword.maxHeight, y + len);
-                                    crossword.minHeight = Math.min(crossword.minHeight, y);
-    
-                                    // System.out.println("Added vertical question: " + addedQuestion.toString() + " with word: " + word);
-                                    success = true;
-                                    break;
+
+                                if(canAdd){
+                                    toBeIntersections = new HashSet<>();
+                                    for(int j = 0; j < len; j++){
+                                        if(j == i) {
+                                            toBeIntersections.add("(" + (y + j) + "," + x + ")");
+                                            continue;
+                                        };
+                                        if(crossword.matrix.get("("+ (y + j) +","+ (x) +")") != null){
+                                            if(crossword.matrix.get("("+ (y + j) +","+ (x) +")") != word.charAt(j)) {
+                                                canAdd = false;
+                                                break;
+                                            };
+                                            toBeIntersections.add("(" + (y + j) + "," + x + ")");
+                                        }
+                                        else{
+                                            if(crossword.matrix.get("("+ (y + j) +","+ (x + 1) +")") != null){
+                                                canAdd = false;
+                                                break;
+                                            }
+                                            if(crossword.matrix.get("("+ (y + j) +","+ (x - 1) +")") != null){
+                                                canAdd = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if(crossword.matrix.get("("+ (y + len) +","+ (x) +")") != null) canAdd = false;
+                                    if(crossword.matrix.get("("+ (y - 1) +","+ (x) +")") != null) canAdd = false;
+                                    if(canAdd) {
+                                        addQuestionV(addedQuestion, word, toBeIntersections);
+                                        vertical = false;
+        
+                                        crossword.maxHeight = Math.max(crossword.maxHeight, y + len);
+                                        crossword.minHeight = Math.min(crossword.minHeight, y);
+        
+                                        // System.out.println("Added vertical question: " + addedQuestion.toString() + " with word: " + word);
+                                        success = true;
+                                        break;
+                                    }
                                 }
                             }
 
-                            if(i == 0 && even){
-                                break;
-                            }
-
-                            else if(i == len && !even){
-                                break;
-                            }
+                            if(i == 0 && even) break;
+                            if(i == len && !even) break;
+                            
                 
                             if(add){
                                 i += increment;
@@ -204,53 +202,49 @@ public class CrosswordGenerator {
                                 int x = xpoint - i;
 
                                 Boolean canAdd = true;
-                                toBeIntersections = new HashSet<>();
-                                for(int j = 0; j < len; j++){
-                                    if(j == i) {
-                                        toBeIntersections.add("(" + (y) + "," + (x + j) + ")");
-                                        continue;
-                                    }
-                                    if(crossword.matrix.get("("+ (y) +","+ (x + j) +")") != null){
-                                        if(crossword.matrix.get("("+ (y) +","+ (x + j) +")") != word.charAt(j)) {
-                                            canAdd = false;
-                                            break;
-                                        };
-                                        toBeIntersections.add("(" + (y) + "," + (x + j) + ")");
-                                    }
-                                    else{
-                                        if(crossword.matrix.get("("+ (y + 1) +","+ (x + j) +")") != null){
-                                            canAdd = false;
-                                            break;
-                                        }
-                                        if(crossword.matrix.get("("+ (y - 1) +","+ (x + j) +")") != null){
-                                            canAdd = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if(crossword.matrix.get("("+ (y) +","+ (x + len) +")") != null) canAdd = false;
-                                if(crossword.matrix.get("("+ (y) +","+ (x - 1) +")") != null) canAdd = false;
                                 Question addedQuestion = new Question(y, x, len);
                                 if (compaction && crossword.expanding(addedQuestion, word)) canAdd = false;
 
-                                if(canAdd) {
-                                    addQuestionH(addedQuestion, word, toBeIntersections);
-                                    vertical = true;
-    
-                                    // System.out.println("Added horizontal question: " + addedQuestion.toString() + " with word: " + word);
-                                    success = true;
-                                    break;
+                                if(canAdd){
+                                    toBeIntersections = new HashSet<>();
+                                    for(int j = 0; j < len; j++){
+                                        if(j == i) {
+                                            toBeIntersections.add("(" + (y) + "," + (x + j) + ")");
+                                            continue;
+                                        }
+                                        if(crossword.matrix.get("("+ (y) +","+ (x + j) +")") != null){
+                                            if(crossword.matrix.get("("+ (y) +","+ (x + j) +")") != word.charAt(j)) {
+                                                canAdd = false;
+                                                break;
+                                            };
+                                            toBeIntersections.add("(" + (y) + "," + (x + j) + ")");
+                                        }
+                                        else{
+                                            if(crossword.matrix.get("("+ (y + 1) +","+ (x + j) +")") != null){
+                                                canAdd = false;
+                                                break;
+                                            }
+                                            if(crossword.matrix.get("("+ (y - 1) +","+ (x + j) +")") != null){
+                                                canAdd = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if(crossword.matrix.get("("+ (y) +","+ (x + len) +")") != null) canAdd = false;
+                                    if(crossword.matrix.get("("+ (y) +","+ (x - 1) +")") != null) canAdd = false;
+                                    if(canAdd) {
+                                        addQuestionH(addedQuestion, word, toBeIntersections);
+                                        vertical = true;
+        
+                                        // System.out.println("Added horizontal question: " + addedQuestion.toString() + " with word: " + word);
+                                        success = true;
+                                        break;
+                                    }
                                 }
-
                             }
 
-                            if(i == 0 && even){
-                                break;
-                            }
-
-                            else if(i == len && !even){
-                                break;
-                            }
+                            if(i == 0 && even) break;
+                            if(i == len && !even) break;
                 
                             if(add){
                                 i += increment;
@@ -300,37 +294,5 @@ public class CrosswordGenerator {
         }
 
         System.out.println("Done generating\n");
-    }
-
-    public static void main(String[] args) {
-        long startTime = System.nanoTime();
-
-        CrosswordGenerator cg = new CrosswordGenerator("dictionaryShorter.json");
-
-        try{
-            cg.initialize();
-            cg.generate();
-        }catch (Exception e){
-            e.printStackTrace();
-            System.out.println("Generation failed");
-            return;
-        }
-
-        long elapsedTime = System.nanoTime() - startTime;
-        System.out.println("Total execution time in millis: " + elapsedTime/1000000);
-
-        if(cg.crossword.maxWidth - cg.crossword.minWidth > 200){
-            System.out.println("Width: " + (cg.crossword.maxWidth - cg.crossword.minWidth));
-            System.out.println("Height: " + (cg.crossword.maxHeight - cg.crossword.minHeight));
-            System.out.println("Crossword is too big to print");
-        }
-        else{
-            System.out.println("Width: " + (cg.crossword.maxWidth - cg.crossword.minWidth));
-            System.out.println("Height: " + (cg.crossword.maxHeight - cg.crossword.minHeight));
-            System.out.println("Density: " + cg.crossword.matrix.size() + "/" + ((cg.crossword.maxWidth - cg.crossword.minWidth) * (cg.crossword.maxHeight - cg.crossword.minHeight)));
-            System.out.println("Score: " + (Double.parseDouble(((Integer) cg.crossword.matrix.size()).toString())/Double.parseDouble(((Integer)((cg.crossword.maxWidth - cg.crossword.minWidth) * (cg.crossword.maxHeight - cg.crossword.minHeight))).toString())));
-            System.out.println("result: \n");
-            cg.crossword.print();
-        }
     }
 }

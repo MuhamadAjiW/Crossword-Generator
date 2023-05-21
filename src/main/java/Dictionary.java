@@ -31,15 +31,4 @@ public class Dictionary {
         });
         
     }
-
-
-    public static void main(String[] args) {
-        System.out.println("Preprocessing dictionary");
-        try {
-            Dictionary dm = new Dictionary("dictionaryshorter.json");
-            dm.initialize();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
