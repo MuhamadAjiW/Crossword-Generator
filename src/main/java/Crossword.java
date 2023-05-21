@@ -17,6 +17,21 @@ public class Crossword {
     public List<String> verticalAnswer = new ArrayList();
     */
 
+    public boolean expanding(Question q, String answer){
+
+        int maxWidth2 = Math.max(maxWidth, q.x + q.length);
+        int minWidth2 = Math.min(minWidth, q.x);
+        int maxHeight2 = Math.max(maxHeight, q.y + q.length);
+        int minHeight2 = Math.min(minHeight, q.y);
+
+        return (
+            maxWidth2 > maxWidth ||
+            minWidth2 < minWidth ||
+            maxHeight2 > maxHeight ||
+            minHeight2 < minHeight
+        );
+    }
+
     public void addQuestionH(Question q, String answer){
         /* 
         horizontalQuestions.add(q);

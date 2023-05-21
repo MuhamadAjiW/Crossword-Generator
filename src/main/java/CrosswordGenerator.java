@@ -92,6 +92,7 @@ public class CrosswordGenerator {
         boolean success = false;
         boolean possible = true;
         boolean possible2 = true;
+        boolean compaction = true;
         boolean vertical = true;
         while(true){
             possible = false;
@@ -100,6 +101,9 @@ public class CrosswordGenerator {
             // System.out.println("Remaining: " + unlocatedStrings.size());
             for(String word : unlocatedStrings){
                 // System.out.println("Checking on: " + word);
+                
+                int len = word.length();
+                boolean even = (len%2 == 0);
                 if(vertical){
                     for(Pair<Point, Character> p : possibleV){
                         int ypoint = p.first.loc.first;
@@ -108,14 +112,18 @@ public class CrosswordGenerator {
                         Character v = p.second;
                         success = false;
 
-                        for(int i = 0; i < word.length(); i++){
-                            if(v == word.charAt(i)){
+                        int i = len/2;
+                        int increment = 1;
+                        boolean add = true;
+                        while(true){
+                            if(i == len){}
+                            else if(v == word.charAt(i)){
                                 int y = ypoint - i;
                                 int x = xpoint;
 
                                 Boolean canAdd = true;
                                 toBeIntersections = new HashSet<>();
-                                for(int j = 0; j < word.length(); j++){
+                                for(int j = 0; j < len; j++){
                                     if(j == i) {
                                         toBeIntersections.add("(" + (y + j) + "," + x + ")");
                                         continue;
@@ -138,22 +146,41 @@ public class CrosswordGenerator {
                                         }
                                     }
                                 }
-                                if(crossword.matrix.get("("+ (y + word.length()) +","+ (x) +")") != null) canAdd = false;
+                                if(crossword.matrix.get("("+ (y + len) +","+ (x) +")") != null) canAdd = false;
                                 if(crossword.matrix.get("("+ (y - 1) +","+ (x) +")") != null) canAdd = false;
+                                Question addedQuestion = new Question(y, x, len);
+                                if (compaction && crossword.expanding(addedQuestion, word)) canAdd = false;
+                                
+                                if(canAdd) {
+                                    addQuestionV(addedQuestion, word, toBeIntersections);
+                                    vertical = false;
+    
+                                    crossword.maxHeight = Math.max(crossword.maxHeight, y + len);
+                                    crossword.minHeight = Math.min(crossword.minHeight, y);
+    
+                                    // System.out.println("Added vertical question: " + addedQuestion.toString() + " with word: " + word);
+                                    success = true;
+                                    break;
+                                }
+                            }
 
-                                if(!canAdd) continue;
-
-                                Question addedQuestion = new Question(y, x, word.length());
-                                addQuestionV(addedQuestion, word, toBeIntersections);
-                                vertical = false;
-
-                                crossword.maxHeight = Math.max(crossword.maxHeight, y + word.length());
-                                crossword.minHeight = Math.min(crossword.minHeight, y);
-
-                                // System.out.println("Added vertical question: " + addedQuestion.toString() + " with word: " + word);
-                                success = true;
+                            if(i == 0 && even){
                                 break;
                             }
+
+                            else if(i == len && !even){
+                                break;
+                            }
+                
+                            if(add){
+                                i += increment;
+                                add = false;
+                            }
+                            else{
+                                i -= increment;
+                                add = true;
+                            }
+                            increment++;
                         }
 
                         if(success) break;
@@ -167,18 +194,22 @@ public class CrosswordGenerator {
                         Character v = p.second;
                         success = false;
 
-                        for(int i = 0; i < word.length(); i++){    
-                            if(v == word.charAt(i)){
+                        int i = len/2;
+                        int increment = 1;
+                        boolean add = true;
+                        while (true){
+                            if(i == len){}
+                            else if(v == word.charAt(i)){
                                 int y = ypoint;
                                 int x = xpoint - i;
 
                                 Boolean canAdd = true;
                                 toBeIntersections = new HashSet<>();
-                                for(int j = 0; j < word.length(); j++){
+                                for(int j = 0; j < len; j++){
                                     if(j == i) {
                                         toBeIntersections.add("(" + (y) + "," + (x + j) + ")");
                                         continue;
-                                    };
+                                    }
                                     if(crossword.matrix.get("("+ (y) +","+ (x + j) +")") != null){
                                         if(crossword.matrix.get("("+ (y) +","+ (x + j) +")") != word.charAt(j)) {
                                             canAdd = false;
@@ -197,19 +228,39 @@ public class CrosswordGenerator {
                                         }
                                     }
                                 }
-                                if(crossword.matrix.get("("+ (y) +","+ (x + word.length()) +")") != null) canAdd = false;
+                                if(crossword.matrix.get("("+ (y) +","+ (x + len) +")") != null) canAdd = false;
                                 if(crossword.matrix.get("("+ (y) +","+ (x - 1) +")") != null) canAdd = false;
+                                Question addedQuestion = new Question(y, x, len);
+                                if (compaction && crossword.expanding(addedQuestion, word)) canAdd = false;
 
-                                if(!canAdd) continue;
+                                if(canAdd) {
+                                    addQuestionH(addedQuestion, word, toBeIntersections);
+                                    vertical = true;
+    
+                                    // System.out.println("Added horizontal question: " + addedQuestion.toString() + " with word: " + word);
+                                    success = true;
+                                    break;
+                                }
 
-                                Question addedQuestion = new Question(y, x, word.length());
-                                addQuestionH(addedQuestion, word, toBeIntersections);
-                                vertical = true;
+                            }
 
-                                // System.out.println("Added horizontal question: " + addedQuestion.toString() + " with word: " + word);
-                                success = true;
+                            if(i == 0 && even){
                                 break;
                             }
+
+                            else if(i == len && !even){
+                                break;
+                            }
+                
+                            if(add){
+                                i += increment;
+                                add = false;
+                            }
+                            else{
+                                i -= increment;
+                                add = true;
+                            }
+                            increment++;
                         }
 
                         if(success) break;
@@ -219,6 +270,7 @@ public class CrosswordGenerator {
                 if (success) {
                     possible = true;
                     possible2 = true;
+                    compaction = true;
                     unlocatedStrings.remove(word);
                     break;
                 };
@@ -233,6 +285,11 @@ public class CrosswordGenerator {
             if (!possible){
                 if(possible2){
                     possible2 = false;
+                    vertical = !vertical;
+                }
+                else if (!possible && compaction){
+                    compaction = false;
+                    possible2 = true;
                     vertical = !vertical;
                 }
                 else{
@@ -255,6 +312,8 @@ public class CrosswordGenerator {
             cg.generate();
         }catch (Exception e){
             e.printStackTrace();
+            System.out.println("Generation failed");
+            return;
         }
 
         long elapsedTime = System.nanoTime() - startTime;
