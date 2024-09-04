@@ -16,19 +16,18 @@ public class Dictionary {
     }
 
     public void initialize() throws Exception{
-        System.out.println("Grouping dictionary by length");
+        System.out.println("Loading dictionary");
 
         FileReader reader = new FileReader(file);
         JSONParser parser = new JSONParser();
         JSONObject dictionary = (JSONObject) parser.parse(reader);
 
-        List<String> words = new ArrayList<>(dictionary.keySet());
-        words.sort(Comparator.comparingInt(String::length).reversed());
-        
-        words.forEach(word -> {
-            //System.out.println(word);
-            wordlist.add(word);
-        });
-        
+        wordlist = new ArrayList<>(dictionary.keySet());        
+    }
+
+    public void sortWords() throws Exception{
+        System.out.println("Sorting dictionary by length");
+
+        wordlist.sort(Comparator.comparingInt(String::length).reversed());        
     }
 }
